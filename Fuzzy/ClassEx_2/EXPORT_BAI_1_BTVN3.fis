@@ -1,0 +1,59 @@
+[System]
+Name='EXPORT_BAI_1_BTVN3'
+Type='sugeno'
+Version=2.0
+NumInputs=2
+NumOutputs=1
+NumRules=15
+AndMethod='min'
+OrMethod='max'
+ImpMethod='prod'
+AggMethod='sum'
+DefuzzMethod='wtaver'
+
+[Input1]
+Name='X'
+Range=[-1 1]
+NumMFs=5
+MF1='NB':'trimf',[-1.8 -1 -0.5]
+MF2='PS':'trimf',[0 0.5 1]
+MF3='PB':'trimf',[0.5 1 1.8]
+MF4='NS':'trimf',[-1 -0.5 0]
+MF5='ZE':'trimf',[-0.5 0 0.5]
+
+[Input2]
+Name='XDOT'
+Range=[-1 1]
+NumMFs=3
+MF1='NE':'trimf',[-1.8 -1 0]
+MF2='ZE':'trimf',[-1 0 1]
+MF3='PO':'trimf',[0 1 1.81]
+
+[Output1]
+Name='THETA'
+Range=[0 1]
+NumMFs=7
+MF1='NS':'constant',[-0.4]
+MF2='NM':'constant',[-0.7]
+MF3='NB':'constant',[-1]
+MF4='ZE':'constant',[0]
+MF5='PS':'constant',[0.4]
+MF6='PM':'constant',[0.7]
+MF7='PB':'constant',[1]
+
+[Rules]
+1 1, 3 (1) : 2
+1 2, 2 (1) : 2
+1 3, 1 (1) : 2
+4 1, 2 (1) : 2
+4 2, 1 (1) : 2
+4 3, 4 (1) : 2
+5 1, 1 (1) : 2
+5 2, 4 (1) : 2
+5 3, 5 (1) : 2
+2 1, 4 (1) : 2
+2 2, 5 (1) : 2
+2 3, 6 (1) : 2
+3 1, 5 (1) : 2
+3 2, 6 (1) : 2
+3 3, 7 (1) : 2
