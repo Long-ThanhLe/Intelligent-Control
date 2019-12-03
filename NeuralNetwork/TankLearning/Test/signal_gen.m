@@ -1,0 +1,87 @@
+% Programmed by   : Huynh Thai Hoang, University of Technology at Ho Chi Minh City.
+% Last updated    : April 3, 2004
+
+rand('state',sum(100*clock))
+Ts=1;
+
+N =1000;
+Wmin = 20;
+Wmax = 50;
+Umin = 0;
+Umax = 9;
+k1 = 1;
+k2 = 1;
+clear u
+
+u = zeros(1,N);
+while k2 < N
+    W = rand*(Wmax - Wmin)+ Wmin;
+    k2 = k1 + W;
+    if k2 > N
+        k2 = N;
+    end
+    u(floor(k1):floor(k2)) = rand*(Umax - Umin) + Umin;
+    k1 = k2;
+end
+t = (1:N)*Ts;
+sig=[t; u];
+plot(sig(1,:),sig(2,:));
+
+save SingleTank_Input sig;
+save RobotArm_Input sig;
+
+%threshold1 = 0.3;
+%threshold2 = 0.2;
+%Tmin1 = 20;
+%Tmin2 = 20;
+%C1 = 2;
+%C2 = 2;
+%{
+clear t u
+
+%rand('state',sum(100*clock))
+
+T0=1; T1=1; T=0;
+u(1:1000)=0;
+
+
+u_old = 0;
+u_new = 0;
+while T1<500,
+   T0=T1;
+   T=C1*round(10*rand)+Tmin1;
+   T1=T0+T;
+   if T1>1000, T1=1000; end;
+   while abs(u_new-u_old)< threshold1,
+       u_new=rand;
+   end;
+   u_old = u_new;
+   u(T0:T1)=u_new;
+end;
+
+u_old = 0;
+u_new = 0;
+while T1<1000,
+   T0=T1;
+   T=C2*round(10*rand)+Tmin2;
+   T1=T0+T;
+   if T1>1000, T1=1000; end;
+   while abs(u_new-u_old)< threshold2,
+        u_new=rand;
+   end;
+   u_old = u_new;
+   u(T0:T1)=u_new;
+end;
+
+t(1:1000)=0;
+for k=0:999,
+   t(1+k)=k*Ts;
+end  
+
+sig=[t; u];
+plot(sig(1,:),sig(2,:));
+
+save SingleTank_Input sig;
+%save RobotArm_Input sig;
+%}
+

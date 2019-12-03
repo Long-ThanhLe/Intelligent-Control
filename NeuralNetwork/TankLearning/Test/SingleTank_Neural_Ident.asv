@@ -1,0 +1,57 @@
+% Programmed by   : Huynh Thai Hoang, University of Technology at Ho Chi Minh City.
+% Last updated    : April 3, 2004
+
+
+load SingleTank_Data_05;         %estimation data
+ue=data.u;
+ye=data.y;
+
+load SingleTank_Data_06;         %validation data
+uv=data.u;
+yv=data.y;
+
+N=length(ue);
+U_1=ue(1:N-1)';
+Y_1=ye(1:N-1)';
+Y=ye(2:N)';
+
+X=[U_1;Y_1];
+D=Y;
+
+%Net=newff(X,D,5,{'tansig','purelin'});
+
+Net=newff([0 12;0 50],[5 1],{'tansig','purelin'});
+
+Net.trainParam.goal=0.1;
+Net=train(Net,X,D);
+
+%save SingleTank_NNetModel.mat Net
+
+ysim_ue=zeros(N,1);
+for t=2:N,
+    ysim_ue(t) = sim(Net,[ue(t-1);ysim_ue(t-1)]);
+end;
+
+ysim_uv=zeros(N,1);
+for t=2:N,
+    ysim_uv(t) = sim(Net,[uv(t-1);ysim_uv(t-1)]);
+end;
+
+VAF1=1-((ysim_ue-ye)'*(ysim_ue-ye))/((ye-mean(ye))'*(ye-mean(ye)))
+VAF2=1-((ysim_uv-yv)'*(ysim_uv-yv))/((yv-mean(yv))'*(yv-mean(yv)))
+
+figure;
+subplot(2,1,1);
+plot(ye,'r-');
+hold on;
+plot(ysim_ue,'b-');
+legend('System','Model');
+
+subplot(2,1,2);
+plot(yv,'r-');
+hold on;
+plot(ysim_uv,'b-');
+legend('System','Model');
+
+     
+
